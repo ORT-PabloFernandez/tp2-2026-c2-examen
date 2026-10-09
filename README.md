@@ -67,3 +67,9 @@ Si ya terminaste o son las 10:00 asegurate de seguir los siguientes pasos para l
 
 ### Endpoint base:
 - GET / - Mensaje de bienvenida de la API
+
+## Endopoint del parcial
+- GET /api/listings/property-type/[type] - Obtiene las propiedades por tipo de alojamiento
+- GET /api/listings/with-total-price - OBtiene las propiedades con el totalPrice
+- GET /api/listings/host/[host_id] - Obtiene las propiedades de un host particular
+- GET /api/listings/top-hosts?limit=10 - Obtiene un raking de los host con mas propiedades listadas
