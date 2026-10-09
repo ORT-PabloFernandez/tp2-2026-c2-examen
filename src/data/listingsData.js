@@ -36,34 +36,65 @@ export async function findPropertyByType(type) {
 
 
 
-export async function findTotalOfProperties() {
+export async function findTotalOfProperties(page, pageSize) {
     const db = getDb();
+    if (page && pageSize) {
+        const skip = (page - 1) * pageSize;
+        const properties = await db.collection("listingsAndReviews")
+                            .find()
+                            .skip(skip)
+                            .limit(pageSize)
+                            .toArray();
+
+        const priceProperties = properties
+            .map(
+            prop => {
+                const price = prop.price || 0;
+                const cleaning_fee = prop.cleaning_fee || 0;
+                const security_deposit = prop.security_deposit || 0;
+                const extra_people = prop.extra_people || 0;
+                return ({
+                    ...prop,
+                    totalPrice: parseFloat(price) + parseFloat(cleaning_fee) + parseFloat(security_deposit) + parseFloat(extra_people)
+                })
+            } 
+        );
+        
+        return priceProperties;
+    }else {
+        const properties = await db.collection("listingsAndReviews")
+                            .find()
+                            .toArray();
+
+        const priceProperties = properties
+            .map(
+            prop => {
+                const price = prop.price || 0;
+                const cleaning_fee = prop.cleaning_fee || 0;
+                const security_deposit = prop.security_deposit || 0;
+                const extra_people = prop.extra_people || 0;
+                return ({
+                    ...prop,
+                    totalPrice: parseFloat(price) + parseFloat(cleaning_fee) + parseFloat(security_deposit) + parseFloat(extra_people)
+                })
+            } 
+        );
+        
+        return priceProperties;
+    }
     
-    const properties = await db.collection("listingsAndReviews")
-                        .find()
-                        .toArray();
-
-    const priceProperties = properties
-        .map(
-        prop => {
-            const price = prop.price || 0;
-            const cleaning_fee = prop.cleaning_fee || 0;
-            const security_deposit = prop.security_deposit || 0;
-            const extra_people = prop.extra_people || 0;
-            return ({
-                ...prop,
-                totalPrice: parseFloat(price) + parseFloat(cleaning_fee) + parseFloat(security_deposit) + parseFloat(extra_people)
-            })
-        } 
-    );
-
-    return priceProperties;
 }
-
 
 
 export async function findHostById(id) {
     const db = getDb();
     const listing = await db.collection("listingsAndReviews").findOne({ "host.host_id": id })
     return listing;
+}
+
+export async function updateProperty(id, data) {
+    const _id = toObjectId(id);
+    if (!_id) return null;
+    const updated = await getCollection().findOneAndReplace({ _id }, data, { returnDocument: "after" });
+    return map(updated);
 }

@@ -1,4 +1,4 @@
-import { getListings, getListingById, getPropertyByType, getTotalOfAllProperties, getHostById } from "../services/listingsService.js";
+import { getListings, getListingById, getPropertyByType, getTotalOfAllProperties, getHostById, replaceProp } from "../services/listingsService.js";
 
 export const getAllListings = async (req, res) => {
     try {
@@ -39,14 +39,11 @@ export const getProperty = async (req, res) => {
     }
 };
 
-/*> 2. Desarrollar el endpoint para obtener todas las propiedades con precio total calculado
-Crear un endpoint /api/listings/with-total-price que retorne todas las propiedades con una nueva propiedad llamada **totalPrice** 
-que sume el precio base (price) más las tarifas adicionales como cleaning_fee, security_deposit y extra_people si existen. 
-Si alguna tarifa no está disponible, debe considerarse como 0.*/ 
-
 export const getTotal = async (req, res) => {
     try {
-        const list = await getTotalOfAllProperties();
+        const page = req.query.page ? parseInt(req.query.page) : undefined;
+        const pageSize = req.query.pageSize ? parseInt(req.query.pageSize) : undefined;
+        const list = await getTotalOfAllProperties(page, pageSize);
 
         res.json(list);
     } catch (error) {
@@ -70,6 +67,17 @@ export const getHost = async (req, res) => {
         res.json(hosts);
     } catch (error) {
         console.error("Error fetching hosts: ", error);
+        res.status(500).json({message: "Internal server error"});
+    }
+};
+
+export const updateProperty = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const property = await replaceProp(id, req.body);
+        res.status(200).json({ message: "Propiedad actualizada", data: property });
+    } catch (error) {
+        console.error("Error updating data: ", error);
         res.status(500).json({message: "Internal server error"});
     }
 };
