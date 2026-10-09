@@ -64,6 +64,12 @@ Si ya terminaste o son las 10:00 asegurate de seguir los siguientes pasos para l
 ### Endpoints de listings/propiedades:
 - GET /api/listings?pageSize=[pageSize]&page=[page] - Obtener todas las propiedades con paginación opcional (requiere autenticación)
 - GET /api/listings/:id - Obtener una propiedad específica por ID (requiere autenticación)
+- GET /api/listings/property-type/:type?pageSize=[pageSize]&page=[page] - Filtra propiedades por tipo de propiedad de forma insensible a mayúsculas/minúsculas con paginación opcional (requiere autenticación)
+- GET /api/listings/with-total-price?pageSize=[pageSize]&page=[page] - Obtiene propiedades calculando el campo totalPrice (price + cleaning_fee + security_deposit + extra_people) con paginación opcional (requiere autenticación)
+- GET /api/listings/host/:host_id?pageSize=[pageSize]&page=[page] - Obtiene todas las propiedades asociadas a un host específico por su ID con soporte de paginación (requiere autenticación)
+- GET /api/listings/top-hosts?limit=[limit] - Ranking de los hosts con más propiedades listadas ordenados de mayor a menor (requiere autenticación, default limit=10)
+- PATCH /api/listings/:id/availability - Actualiza el estado de disponibilidad de una propiedad específica (requiere autenticación). Campos aceptados en el body: available_30, available_60, available_90, available_365
+- PUT /api/listings/:id/availability - Actualiza el estado de disponibilidad de una propiedad específica admitiendo método PUT (requiere autenticación). Campos aceptados en el body: available_30, available_60, available_90, available_365
 
 ### Endpoint base:
 - GET / - Mensaje de bienvenida de la API
